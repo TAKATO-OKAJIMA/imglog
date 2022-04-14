@@ -1,5 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
+from ..record import ImageLogRecord
+
 
 class AbstractHandler(metaclass=ABCMeta):
 
@@ -7,7 +9,7 @@ class AbstractHandler(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def emit(self, record) -> None:
+    def emit(self, record: ImageLogRecord) -> None:
         pass
 
     @abstractmethod
