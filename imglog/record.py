@@ -1,13 +1,14 @@
 import uuid
 import datetime
-from typing import List
+from typing import List, Union
 
 class ImageProperty(object):
 
-    def __init__(self, width: int, height: int, channel: int) -> None:
+    def __init__(self, width: int, height: int, channel: int, mode: str) -> None:
         self.__width = width
         self.__height = height
         self.__channel = channel
+        self.__mode = mode
 
     @property
     def width(self) -> int:
@@ -21,11 +22,16 @@ class ImageProperty(object):
     def channel(self) -> int:
         return self.__channel
 
+    @property
+    def mode(self) -> str:
+        return self.__mode
+
     def toDict(self) -> dict:
         properties = {
             'width': self.__width,
             'height': self.__height,
-            'channel': self.__channel
+            'channel': self.__channel,
+            'mode': self.__mode
         }
 
         return properties
@@ -35,7 +41,7 @@ class ImageLogRecord(object):
 
     def __init__(self, 
                  level: int,
-                 images: List[bytes], 
+                 images: List[Union[bytes, str]], 
                  imagesProperty: List[ImageProperty], 
                  msg: str = None) -> None:
         self.__id = uuid.uuid4().hex

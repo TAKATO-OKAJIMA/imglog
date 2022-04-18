@@ -1,6 +1,7 @@
 from typing import List
 
 from numpy import ndarray
+from PIL import Image
 
 from .abc import AbstractImageLogger
 
@@ -11,7 +12,13 @@ class ArrayImageLogger(AbstractImageLogger):
         pass
 
     def logs(self, level: int, images: List[ndarray], msg: str) -> None:
-        pass
+        pillowImages = list()
+        
+        for image in images:
+            pillowImage = Image.fromarray(image)
+            pillowImages.append(pillowImage)
+        
+        bytesImages = [pillowImage.tobytes() for pillowImage in pillowImages]
 
     def log(self, level: int, image: ndarray, msg: str) -> None:
         pass

@@ -1,6 +1,7 @@
-import imp
 import json
-from textwrap import indent
+import os
+from pathlib import Path
+from typing import Union
 
 from .abc import AbstractHandler
 from ..record import ImageLogRecord
@@ -8,11 +9,14 @@ from ..record import ImageLogRecord
 class JSONHandler(AbstractHandler):
 
     def __init__(self,
-                 filename: str,
+                 filename: Union[str, Path],
                  encoding: str = 'utf-8',
                  indent: int = 4) -> None:
+
+        filename = os.fspath(filename)
+            
         self.__records = list()
-        self.__filename = filename
+        self.__filename = os.path.abspath(filename)
         self.__encoding = encoding
         self.__indent = indent
 
@@ -24,6 +28,7 @@ class JSONHandler(AbstractHandler):
         
         with open(self.__filename, mode='w', encoding=self.__encoding) as file:
             file.write(jsonString)
+            file.flush()
 
         self.__records.clear()
 
