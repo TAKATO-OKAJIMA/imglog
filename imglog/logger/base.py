@@ -1,4 +1,3 @@
-import atexit
 import base64
 import io
 import logging
@@ -23,48 +22,50 @@ class BaseImageLogger(AbstractImageLogger):
  
 
     def logs(self, level: int, images: List[bytes], imagesProperty: List[ImageProperty]) -> None:
-        self.__streamLogger.log(level)
-        record = ImageLogRecord(level,
-                                [self.imageExchange(image) for image in images],
-                                imagesProperty
-                                )
+        if level >= self.__level:
+            record = ImageLogRecord(level,
+                                    [self.__imageExchangeBase64(image) for image in images],
+                                    imagesProperty
+                                    )
+            
+            self.__streamLogger.log(level, record.id)
+
+            for handler in self.__handlers:
+                handler.emit(record)
         
-        for handler in self.__handlers:
-            handler.emit(record)
-        
 
-    def log(self, level: int, image: bytes, msg: str) -> None:
-        self.logs(level, [image], msg)
+    def log(self, level: int, image: bytes) -> None:
+        self.logs(level, [image])
 
-    def debugs(self, images: List[bytes], msg: str) -> None:
-        self.logs(logging.DEBUG, images, msg)
+    def debugs(self, images: List[bytes]) -> None:
+        self.logs(logging.DEBUG, images)
 
-    def debug(self, image: bytes, msg: str) -> None:
-        self.debugs([image], msg)
+    def debug(self, image: bytes) -> None:
+        self.debugs([image])
 
-    def infos(self, images: List[bytes], msg: str) -> None:
-        self.logs(images, msg)
+    def infos(self, images: List[bytes]) -> None:
+        self.logs(logging.INFO, images)
 
-    def info(self, image: bytes, msg: str) -> None:
-        self.infos([image] , msg)
+    def info(self, image: bytes) -> None:
+        self.infos([image] )
 
-    def warnings(self, images: List[bytes], msg: str) -> None:
-        self.logs(logging.WARNING, images, msg)
+    def warnings(self, images: List[bytes]) -> None:
+        self.logs(logging.WARNING, images)
     
-    def warning(self, image: bytes, msg: str) -> None:
-        self.warnings([image], msg)
+    def warning(self, image: bytes) -> None:
+        self.warnings([image])
 
-    def errors(self, images: List[bytes], msg: str) -> None:
-        self.logs(logging.ERROR, images, msg)
+    def errors(self, images: List[bytes]) -> None:
+        self.logs(logging.ERROR, images)
 
-    def error(self, image: bytes, msg: str) -> None:
-        self.errors([image], msg)
+    def error(self, image: bytes) -> None:
+        self.errors([image])
 
-    def criticals(self, images: List[bytes], msg: str) -> None:
-        self.logs(logging.CRITICAL, images, msg)
+    def criticals(self, images: List[bytes]) -> None:
+        self.logs(logging.CRITICAL, images)
 
-    def critical(self, image: bytes, msg: str) -> None:
-        self.criticals([image], msg)
+    def critical(self, image: bytes) -> None:
+        self.criticals([image])
 
     def setLevel(self, level: _Level) -> None:
         self.__level = level
@@ -76,7 +77,7 @@ class BaseImageLogger(AbstractImageLogger):
     def removeHandler(self, handler: AbstractHandler) -> None:
         self.__handlers.remove(handler)
 
-    def imageExchange(self, image: bytes, format:str = 'PNG') -> str:
+    def __imageExchangeBase64(self, image: bytes, format: str = 'PNG') -> str:
         inputStream = io.BytesIO(image)
         pillowImage = Image.open(inputStream)
 

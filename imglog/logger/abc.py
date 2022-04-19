@@ -6,51 +6,51 @@ AnyImageObject = Any
 class AbstractImageLogger(metacalss=ABCMeta):
 
     @abstractmethod
-    def logs(self, level: int, images: List[AnyImageObject], msg: str) -> None:
+    def logs(self, level: int, images: List[AnyImageObject]) -> None:
         pass
 
     @abstractmethod
-    def log(self, level: int, image: AnyImageObject, msg: str) -> None:
+    def log(self, level: int, image: AnyImageObject) -> None:
         pass
 
     @abstractmethod
-    def debugs(self, images: List[AnyImageObject], msg: str) -> None:
+    def debugs(self, images: List[AnyImageObject]) -> None:
         pass
 
     @abstractmethod
-    def debug(self, image: AnyImageObject, msg: str) -> None:
+    def debug(self, image: AnyImageObject) -> None:
         pass
 
     @abstractmethod
-    def infos(self, images: List[AnyImageObject], msg: str) -> None:
+    def infos(self, images: List[AnyImageObject]) -> None:
         pass
 
     @abstractmethod
-    def info(self, image: AnyImageObject, msg: str) -> None:
+    def info(self, image: AnyImageObject) -> None:
         pass
 
     @abstractmethod
-    def warnings(self, images: List[AnyImageObject], msg: str) -> None:
+    def warnings(self, images: List[AnyImageObject]) -> None:
         pass
 
     @abstractmethod
-    def warning(self, image: AnyImageObject, msg: str) -> None:
+    def warning(self, image: AnyImageObject) -> None:
         pass
 
     @abstractmethod
-    def errors(self, images: List[AnyImageObject], msg: str) -> None:
+    def errors(self, images: List[AnyImageObject]) -> None:
         pass
 
     @abstractmethod
-    def error(self, image: AnyImageObject, msg: str) -> None:
+    def error(self, image: AnyImageObject) -> None:
         pass
     
     @abstractmethod
-    def criticals(self, images: List[AnyImageObject], msg: str) -> None:
+    def criticals(self, images: List[AnyImageObject]) -> None:
         pass
 
     @abstractmethod
-    def critical(self, image: AnyImageObject, msg: str) -> None:
+    def critical(self, image: AnyImageObject) -> None:
         pass
 
 

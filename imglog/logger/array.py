@@ -1,54 +1,82 @@
+import logging
+from logging import _Level
 from typing import List
 
 from numpy import ndarray
 from PIL import Image
 
-from .abc import AbstractImageLogger
-
+from .abc import AbstractImageLogger, AbstractImageLoggerFactory
+from .base import BaseImageLogger, BaseImageLoggerFactory
+from ..util import ImageValidator, ImagePropertyExtractor
 
 class ArrayImageLogger(AbstractImageLogger):
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, baseImageLogger: BaseImageLogger) -> None:
+        self.__baseImageLogger = baseImageLogger
+        self.__validator = ImageValidator()
+        self.__extractor = ImagePropertyExtractor()
 
-    def logs(self, level: int, images: List[ndarray], msg: str) -> None:
-        pillowImages = list()
-        
+    def logs(self, level: int, images: List[ndarray]) -> None:
+        bytesImages = list()
+        imagesProperty = list()
+
         for image in images:
-            pillowImage = Image.fromarray(image)
-            pillowImages.append(pillowImage)
-        
-        bytesImages = [pillowImage.tobytes() for pillowImage in pillowImages]
+            if self.__validator.valid(image):
+                pillowImage = Image.fromarray(image)
+                bytesImages.append(pillowImage.tobytes())
+                imagesProperty.append(self.__extractor.extract(pillowImage))
 
-    def log(self, level: int, image: ndarray, msg: str) -> None:
-        pass
+        self.__baseImageLogger.logs(level, bytesImages, imagesProperty)
 
-    def debugs(self, images: List[ndarray], msg: str) -> None:
-        pass
+    def log(self, level: int, image: ndarray) -> None:
+        self.logs(level, [image])
 
-    def debug(self, image: ndarray, msg: str) -> None:
-        pass
+    def debugs(self, images: List[ndarray]) -> None:
+        self.logs(logging.DEBUG, images)
 
-    def infos(self, images: List[ndarray], msg: str) -> None:
-        pass
+    def debug(self, image: ndarray) -> None:
+        self.debugs([image])
 
-    def info(self, image: ndarray, msg: str) -> None:
-        pass
+    def infos(self, images: List[ndarray]) -> None:
+        self.logs(logging.INFO, images)
 
-    def warnings(self, images: List[ndarray], msg: str) -> None:
-        pass
+    def info(self, image: ndarray) -> None:
+        self.infos([image] )
 
-    def warning(self, image: ndarray, msg: str) -> None:
-        pass
+    def warnings(self, images: List[ndarray]) -> None:
+        self.logs(logging.WARNING, images)
 
-    def errors(self, images: List[ndarray], msg: str) -> None:
-        pass
+    def warning(self, image: ndarray) -> None:
+        self.warnings([image])
 
-    def error(self, image: ndarray, msg: str) -> None:
-        pass
+    def errors(self, images: List[ndarray]) -> None:
+        self.logs(logging.ERROR, images)
 
-    def criticals(self, images: List[ndarray], msg: str) -> None:
-        pass
+    def error(self, image: ndarray) -> None:
+        self.errors([image])
 
-    def critical(self, image: ndarray, msg: str) -> None:
-        pass
+    def criticals(self, images: List[ndarray]) -> None:
+        self.logs(logging.CRITICAL, images)
+
+    def critical(self, image: ndarray) -> None:
+        self.criticals([image])
+
+    def setLevel(self, level: _Level) -> None:
+        self.__baseImageLogger.setLevel(level)
+
+
+class ArrayImageLoggerFactory(AbstractImageLoggerFactory):
+
+    __loggers = {}
+
+    def __init__(self) -> None:
+        self.__baseImageLoggerFactory = BaseImageLoggerFactory()
+
+    def getLogger(self, name: str) -> AbstractImageLogger:
+        if not name in ArrayImageLoggerFactory.__loggers:
+            logger = ArrayImageLogger(self.__baseImageLoggerFactory.getLogger(name))
+            ArrayImageLoggerFactory.__loggers[name] = logger
+        else:
+            logger = ArrayImageLoggerFactory.__loggers[name]
+
+        return logger
