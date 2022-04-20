@@ -6,6 +6,7 @@ from typing import Union
 from .abc import AbstractHandler
 from ..record import ImageLogRecord
 
+
 class JSONHandler(AbstractHandler):
 
     def __init__(self,
