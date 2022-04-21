@@ -14,10 +14,10 @@ class Handler(object):
         self._level = level
 
     def emit(self, record: ImageLogRecord) -> None:
-        pass
+        raise NotImplementedError
 
     def flush(self) -> None:
-        pass
+        raise NotImplementedError
 
     def close(self) -> None:
         del self._level
@@ -36,6 +36,7 @@ class FileHandler(Handler):
         self._records = list()
         self._filename = os.path.abspath(filename)
         self._encoding = encoding
+        self._isFileFlushed = False
         
         FileHandler.__init__(self)
 
@@ -43,7 +44,26 @@ class FileHandler(Handler):
         if record.level >= self._level:
             self.__records.append(record)
 
+    def flush(self) -> None:
+        self._isFileFlushed = True
+
+    @property
+    def filename(self) -> str:
+        self._filename
+
+    @filename.setter
+    def filename(self, filename: Union[str, Path]) -> None:
+        filename = os.fspath(filename)
+        self._filename = os.path.abspath(filename)
+
+    @property
+    def isFileFlushed(self) -> bool:
+        return self._isFileFlushed
+
     def close(self) -> None:
+        if not self.isFileFlushed:
+            self.flush()
+
         del self._records
         del self._filename
         del self._encoding

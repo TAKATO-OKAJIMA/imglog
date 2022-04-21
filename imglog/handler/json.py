@@ -21,8 +21,10 @@ class JSONHandler(FileHandler):
         with open(self._filename, mode='w', encoding=self._encoding) as file:
             file.write(jsonString)
             file.flush()
-
+        
         self._records.clear()
+
+        FileHandler.flush(self)
 
     @property
     def jsonString(self) -> str:

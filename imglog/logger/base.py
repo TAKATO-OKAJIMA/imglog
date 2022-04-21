@@ -19,7 +19,6 @@ class BaseImageLogger(AbstractImageLogger):
         self.__streamLogger = getLogger(name)
         self.__handlers = list()
         self.__level = logging.WARNING
- 
 
     def logs(self, level: int, images: List[bytes], imagesProperty: List[ImageProperty]) -> None:
         if level >= self.__level:
@@ -33,7 +32,6 @@ class BaseImageLogger(AbstractImageLogger):
             for handler in self.__handlers:
                 handler.emit(record)
         
-
     def log(self, level: int, image: bytes) -> None:
         self.logs(level, [image])
 

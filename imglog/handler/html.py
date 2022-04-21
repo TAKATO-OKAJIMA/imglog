@@ -12,7 +12,7 @@ class HTMLHandler(FileHandler):
         FileHandler.__init__(filename, encoding)
 
     def flush(self) -> None:
-        pass
+        FileHandler.flush(self)
 
     @property
     def htmlString(self) -> str:

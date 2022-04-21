@@ -25,6 +25,9 @@ class XMLHandler(FileHandler):
         
         self._records.clear()
 
+        FileHandler.flush(self)
+
+
     @property
     def xmlString(self) -> str:
         root = ET.Element('imglog')

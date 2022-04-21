@@ -22,6 +22,8 @@ class CSVHandler(FileHandler):
             file.flush()
 
         self._records.clear()
+        FileHandler.flush(self)
+
 
     @property
     def csvString(self) -> str:
