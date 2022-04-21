@@ -1,14 +1,22 @@
-from imglog.record import ImageLogRecord
-from .abc import AbstractHandler
+from pathlib import Path
+from typing import Union
+
+from .handler import FileHandler
 
 
-class HTMLHandler(AbstractHandler):
+class HTMLHandler(FileHandler):
 
-    def __init__(self) -> None:
-        self.__records = list()
-
-    def emit(self, record: ImageLogRecord) -> None:
-        self.__records.append(record)
+    def __init__(self,
+                 filename: Union[str, Path],
+                 encoding: str = 'utf-8') -> None:
+        FileHandler.__init__(filename, encoding)
 
     def flush(self) -> None:
         pass
+
+    @property
+    def htmlString(self) -> str:
+        pass
+
+    def close(self) -> None:
+        FileHandler.close(self)

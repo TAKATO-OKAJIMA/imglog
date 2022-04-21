@@ -10,7 +10,7 @@ from PIL import Image
 from .abc import AbstractImageLogger, AbstractImageLoggerFactory
 from .stream import getLogger
 from ..record import ImageLogRecord, ImageProperty
-from ..handler.abc import AbstractHandler
+from ..handler import Handler
 
 
 class BaseImageLogger(AbstractImageLogger):
@@ -71,10 +71,10 @@ class BaseImageLogger(AbstractImageLogger):
         self.__level = level
         self.__streamLogger.setLevel(level)
 
-    def addHandler(self, handler: AbstractHandler) -> None:
+    def addHandler(self, handler: Handler) -> None:
         self.__handlers.append(handler)
 
-    def removeHandler(self, handler: AbstractHandler) -> None:
+    def removeHandler(self, handler: Handler) -> None:
         self.__handlers.remove(handler)
 
     def __imageExchangeBase64(self, image: bytes, format: str = 'PNG') -> str:

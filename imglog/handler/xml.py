@@ -1,45 +1,35 @@
-import imp
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as md
-import os
 from pathlib import Path
-from typing import List, Union
+from typing import Union
 
-from .abc import AbstractHandler
-from ..record import ImageLogRecord
+from .handler import FileHandler
 
 
-class XMLHandler(AbstractHandler):
+class XMLHandler(FileHandler):
 
     def __init__(self,
                  filename: Union[str, Path],
                  encoding: str = 'utf-8',
                  indent: str = '\t') -> None:
-        
-        filename = os.fspath(filename)
 
-        self.__records: List[ImageLogRecord] = list()
-        self.__filename = os.path.abspath(filename)
-        self.__encoding = encoding
         self.__indent = indent
 
-    def emit(self, record: ImageLogRecord) -> None:
-        self.__records.append(record)
+        FileHandler.__init__(self, filename, encoding)
 
     def flush(self) -> None:
         xmlString = self.xmlString
-        with open(self.__filename, 'w', encoding=self.__encoding) as file:
+        with open(self._filename, 'w', encoding=self._encoding) as file:
             file.write(xmlString)
             file.flush()
         
-        self.__records.clear()
-
+        self._records.clear()
 
     @property
     def xmlString(self) -> str:
         root = ET.Element('imglog')
 
-        for record in self.__records:
+        for record in self._records:
             recordElement = ET.Element('record',
                                        {
                                            'id': record.id,
@@ -54,8 +44,8 @@ class XMLHandler(AbstractHandler):
                 imagesElement.append(imageElement)
 
             imagesPropertyElement = ET.Element('imagesProperty')
-            for imagePropery in record.imagesProperty:
-                imagePropertyElement = ET.Element('imageProperty', imagePropery.toDict())
+            for imageProperty in record.imagesProperty:
+                imagePropertyElement = ET.Element('imageProperty', imageProperty.toDict())
                 imagesPropertyElement.append(imagePropertyElement)
             
             recordElement.append(imagesElement)
@@ -63,13 +53,12 @@ class XMLHandler(AbstractHandler):
 
             root.append(recordElement)
 
-        etreeString = ET.tostring(root, encoding=self.__encoding).decode(self.__encoding)
+        etreeString = ET.tostring(root, encoding=self._encoding).decode(self._encoding)
         document = md.parseString(etreeString)
 
-        return document.toprettyxml(indent=self.__indent, encoding=self.__encoding)
+        return document.toprettyxml(indent=self.__indent, encoding=self._encoding)
 
     def close(self) -> None:
-        del self.__records
-        del self.__filename
-        del self.__encoding
         del self.__indent
+
+        FileHandler.close(self)
