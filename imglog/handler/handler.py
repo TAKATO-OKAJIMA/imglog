@@ -5,13 +5,14 @@ from typing import Union
 from logging import _Level
 
 from ..record import ImageLogRecord
+from ..util import _checkLevel
 
 
 class Handler(object):
 
     def __init__(self,
                  level: Union[int, str] = logging.NOTSET) -> None:
-        self._level = level
+        self._level = _checkLevel(level)
 
     def emit(self, record: ImageLogRecord) -> None:
         raise NotImplementedError
@@ -23,7 +24,7 @@ class Handler(object):
         del self._level
 
     def setLevel(self, level: _Level) -> None:
-        self._level = level
+        self._level = _checkLevel(level)
 
 
 class FileHandler(Handler):
@@ -38,7 +39,7 @@ class FileHandler(Handler):
         self._encoding = encoding
         self._isFileFlushed = False
         
-        FileHandler.__init__(self)
+        Handler.__init__(self)
 
     def emit(self, record: ImageLogRecord) -> None:
         if record.level >= self._level:
@@ -68,4 +69,4 @@ class FileHandler(Handler):
         del self._filename
         del self._encoding
 
-        FileHandler.close(self)
+        Handler.close(self)

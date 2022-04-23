@@ -1,5 +1,7 @@
 import uuid
 import datetime
+import logging
+from logging import _levelToName
 from typing import List, Union
 
 class ImageProperty(object):
@@ -48,7 +50,7 @@ class ImageLogRecord(object):
         self.__time = str(datetime.datetime.now())
         self.__level = level
         self.__images = images
-        self.__imagesPropery = imagesProperty
+        self.__imagesProperty = imagesProperty
         self.__msg = msg
 
     @property
@@ -69,7 +71,7 @@ class ImageLogRecord(object):
     
     @property
     def imagesProperty(self) -> List[ImageProperty]:
-        return self.__imagesPropery.copy()
+        return self.__imagesProperty.copy()
 
     @property
     def msg(self) -> str:
@@ -79,10 +81,11 @@ class ImageLogRecord(object):
         properties = {
             'id': self.__id,
             'time': self.__time,
-            'level': self.__level,
+            'level': logging.getLevelName(self.__level),
             'images': self.__images,
-            'imagesPropery': [imageProperty.toDict() for imageProperty in self.__imagesPropery],
+            'imagesProperty': [imageProperty.toDict() for imageProperty in self.__imagesProperty],
             'msg': self.__msg
         }
 
         return properties
+

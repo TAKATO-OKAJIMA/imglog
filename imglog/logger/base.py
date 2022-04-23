@@ -11,6 +11,7 @@ from .abc import AbstractImageLogger, AbstractImageLoggerFactory
 from .stream import getLogger
 from ..record import ImageLogRecord, ImageProperty
 from ..handler import Handler
+from ..util import _checkLevel
 
 
 class BaseImageLogger(AbstractImageLogger):
@@ -66,7 +67,7 @@ class BaseImageLogger(AbstractImageLogger):
         self.criticals([image])
 
     def setLevel(self, level: _Level) -> None:
-        self.__level = level
+        self.__level = _checkLevel(level)
         self.__streamLogger.setLevel(level)
 
     def addHandler(self, handler: Handler) -> None:
