@@ -1,8 +1,7 @@
 import uuid
 import datetime
 import logging
-from logging import _levelToName
-from typing import List, Union
+from typing import List, Union, Optional
 
 class ImageProperty(object):
 
@@ -45,7 +44,7 @@ class ImageLogRecord(object):
                  level: int,
                  images: List[Union[bytes, str]], 
                  imagesProperty: List[ImageProperty], 
-                 msg: str = None) -> None:
+                 msg: Optional[str] = None) -> None:
         self.__id = uuid.uuid4().hex
         self.__time = str(datetime.datetime.now())
         self.__level = level

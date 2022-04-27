@@ -2,16 +2,15 @@ import base64
 import io
 import logging
 from logging import _Level
-from typing import List
+from typing import List, Union
 
-from numpy import byte, record
 from PIL import Image
 
 from .abc import AbstractImageLogger, AbstractImageLoggerFactory
 from .stream import getLogger
 from ..record import ImageLogRecord, ImageProperty
 from ..handler import Handler
-from ..util import _checkLevel
+from ..util import _checkLevel, ImagePropertyExtractor, ImageValidator
 
 
 class BaseImageLogger(AbstractImageLogger):
@@ -21,10 +20,13 @@ class BaseImageLogger(AbstractImageLogger):
         self.__handlers = list()
         self.__level = logging.WARNING
 
-    def logs(self, level: int, images: List[bytes], imagesProperty: List[ImageProperty]) -> None:
+    def log(self, level: int, image: Union[bytes, List[bytes]], imagesProperty: List[ImageProperty]) -> None:
+        if isinstance(image, bytes):
+            image = [image]
+
         if level >= self.__level:
             record = ImageLogRecord(level,
-                                    [self.__imageExchangeBase64(image) for image in images],
+                                    [self.__imageExchangeBase64(img) for img in image],
                                     imagesProperty
                                     )
             
@@ -32,40 +34,10 @@ class BaseImageLogger(AbstractImageLogger):
 
             for handler in self.__handlers:
                 handler.emit(record)
-        
-    def log(self, level: int, image: bytes) -> None:
-        self.logs(level, [image])
 
-    def debugs(self, images: List[bytes]) -> None:
-        self.logs(logging.DEBUG, images)
-
-    def debug(self, image: bytes) -> None:
-        self.debugs([image])
-
-    def infos(self, images: List[bytes]) -> None:
-        self.logs(logging.INFO, images)
-
-    def info(self, image: bytes) -> None:
-        self.infos([image] )
-
-    def warnings(self, images: List[bytes]) -> None:
-        self.logs(logging.WARNING, images)
+    def getEffectiveLevel(self) -> int:
+        return self.__level
     
-    def warning(self, image: bytes) -> None:
-        self.warnings([image])
-
-    def errors(self, images: List[bytes]) -> None:
-        self.logs(logging.ERROR, images)
-
-    def error(self, image: bytes) -> None:
-        self.errors([image])
-
-    def criticals(self, images: List[bytes]) -> None:
-        self.logs(logging.CRITICAL, images)
-
-    def critical(self, image: bytes) -> None:
-        self.criticals([image])
-
     def setLevel(self, level: _Level) -> None:
         self.__level = _checkLevel(level)
         self.__streamLogger.setLevel(level)
@@ -86,6 +58,10 @@ class BaseImageLogger(AbstractImageLogger):
         imageDecodedString = base64.b64encode(outputStream.getvalue()).decode('ascii')
         return imageDecodedString
 
+    def close(self) -> None:
+        del self.__streamLogger
+        del self.__handlers
+        del self.__level
 
 
 class BaseImageLoggerFactory(AbstractImageLoggerFactory):
@@ -103,3 +79,27 @@ class BaseImageLoggerFactory(AbstractImageLoggerFactory):
             logger = BaseImageLoggerFactory[name]
 
         return logger
+
+
+class SurffaceImageLogger(AbstractImageLogger):
+
+    def __init__(self, baseImageLogger: BaseImageLogger) -> None:
+        self._baseImageLogger = baseImageLogger
+        self._validator = ImageValidator()
+        self._extractor = ImagePropertyExtractor()
+
+    def getEffectiveLevel(self) -> int:
+        return self._baseImageLogger.getEffectiveLevel()
+
+    def setLevel(self, level: _Level) -> None:
+        self._baseImageLogger.setLevel(level)
+
+    def addHandler(self, handler: Handler) -> None:
+        self._baseImageLogger.addHandler(handler)
+
+    def removeHandler(self, handler: Handler) -> None:
+        self._baseImageLogger.removeHandler(handler)
+
+    def close(self) -> None:
+        del self._validator
+        del self._extractor

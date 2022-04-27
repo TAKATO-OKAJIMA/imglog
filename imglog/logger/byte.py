@@ -1,63 +1,28 @@
-import logging
-from logging import _Level
-from typing import List
+from typing import List, Union
 
 from .abc import AbstractImageLogger, AbstractImageLoggerFactory
-from .base import BaseImageLogger, BaseImageLoggerFactory
-from ..util import ImageValidator, ImagePropertyExtractor
+from .base import BaseImageLogger, BaseImageLoggerFactory, SurffaceImageLogger
 
 
-class BytesImageLogger(AbstractImageLogger):
+class BytesImageLogger(SurffaceImageLogger):
 
     def __init__(self, baseImageLogger: BaseImageLogger) -> None:
-        self.__baseImageLogger = baseImageLogger
-        self.__validator = ImageValidator()
-        self.__extractor = ImagePropertyExtractor()
+        SurffaceImageLogger.__init__(self, baseImageLogger)
 
-    def logs(self, level: int, images: List[bytes]) -> None:
+    def log(self, level: int, image: Union[bytes, List[bytes]]) -> None:
+        if isinstance(image, bytes):
+            image = [image]
+
         imagesProperty = list()
 
-        for image in images:
-            if self.__validator.valid(image):
-                imagesProperty.append(self.__extractor.extract(image))
+        for img in image:
+            if self._validator.valid(img):
+                imagesProperty.append(self._extractor.extract(img))
 
-        self.__baseImageLogger.logs(level, images, imagesProperty)
+        self._baseImageLogger.log(level, image, imagesProperty)
 
-    def log(self, level: int, image: bytes) -> None:
-        self.logs(level, [image])
-
-    def debugs(self, images: List[bytes]) -> None:
-        self.logs(logging.DEBUG, images)
-
-    def debug(self, image: bytes) -> None:
-        self.debugs([image])
-
-    def infos(self, images: List[bytes]) -> None:
-        self.logs(logging.INFO, images)
-
-    def info(self, image: bytes) -> None:
-        self.infos([image])
-
-    def warnings(self, images: List[bytes]) -> None:
-        self.logs(logging.WARNING, images)
-    
-    def warning(self, image: bytes) -> None:
-        self.warnings([image])
-
-    def errors(self, images: List[bytes]) -> None:
-        self.logs(logging.ERROR, images)
-
-    def error(self, image: bytes) -> None:
-        self.errors([image])
-
-    def criticals(self, images: List[bytes]) -> None:
-        self.logs(logging.CRITICAL, images)
-
-    def critical(self, image: bytes) -> None:
-        self.criticals([image])
-
-    def setLevel(self, level: _Level) -> None:
-        self.__baseImageLogger.setLevel(level)
+    def close(self) -> None:
+        SurffaceImageLogger.close(self)
 
 
 class BytesImageLoggerFactory(AbstractImageLoggerFactory):

@@ -1,56 +1,52 @@
 from abc import ABCMeta, abstractmethod
-from typing import Any, List
+import logging
+from typing import Any, List, Union
+from logging import _Level
+
+from ..handler import Handler
 
 AnyImageObject = Any
 
-class AbstractImageLogger(metacalss=ABCMeta):
+
+class AbstractImageLogger(metaclass=ABCMeta):
 
     @abstractmethod
-    def logs(self, level: int, images: List[AnyImageObject]) -> None:
+    def log(self, level: int, image: Union[AnyImageObject, List[AnyImageObject]]) -> None:
+        pass
+
+    def debug(self, image: Union[AnyImageObject, List[AnyImageObject]]) -> None:
+        self.log(logging.DEBUG, image)
+
+    def info(self, image: Union[AnyImageObject, List[AnyImageObject]]) -> None:
+        self.log(logging.INFO, image)
+
+    def warning(self, image: Union[AnyImageObject, List[AnyImageObject]]) -> None:
+        self.log(logging.WARNING, image)
+ 
+    def error(self, image: Union[AnyImageObject, List[AnyImageObject]]) -> None:
+        self.log(logging.ERROR, image)
+
+    def critical(self, image: Union[AnyImageObject, List[AnyImageObject]]) -> None:
+        self.log(logging.CRITICAL, image)
+
+    @abstractmethod
+    def getEffectiveLevel(self) -> int:
         pass
 
     @abstractmethod
-    def log(self, level: int, image: AnyImageObject) -> None:
+    def setLevel(self, level: _Level) -> None:
         pass
 
     @abstractmethod
-    def debugs(self, images: List[AnyImageObject]) -> None:
+    def addHandler(self, handler: Handler) -> None:
         pass
 
     @abstractmethod
-    def debug(self, image: AnyImageObject) -> None:
+    def removeHandler(self, handler: Handler) -> None:
         pass
 
     @abstractmethod
-    def infos(self, images: List[AnyImageObject]) -> None:
-        pass
-
-    @abstractmethod
-    def info(self, image: AnyImageObject) -> None:
-        pass
-
-    @abstractmethod
-    def warnings(self, images: List[AnyImageObject]) -> None:
-        pass
-
-    @abstractmethod
-    def warning(self, image: AnyImageObject) -> None:
-        pass
-
-    @abstractmethod
-    def errors(self, images: List[AnyImageObject]) -> None:
-        pass
-
-    @abstractmethod
-    def error(self, image: AnyImageObject) -> None:
-        pass
-    
-    @abstractmethod
-    def criticals(self, images: List[AnyImageObject]) -> None:
-        pass
-
-    @abstractmethod
-    def critical(self, image: AnyImageObject) -> None:
+    def close(self) -> None:
         pass
 
 
