@@ -6,13 +6,6 @@ from PIL import Image
 
 from ..record import ImageProperty
 
-INVALID_PROPERTY = (
-    -1,
-    -1,
-    -1,
-    'TOINS'
-)
-
 
 class ImagePropertyExtractor(object):
 
@@ -39,14 +32,14 @@ class ImagePropertyExtractor(object):
         elif isinstance(image, Image.Image):
             return self.__extractFromPillowImage(image)
         else:
-            return ImageProperty(*INVALID_PROPERTY)
+            return ImageProperty.initializeInvalidProperty()
 
     def __extractFromBytes(self, image: bytes) -> ImageProperty:
         pillowImage = Image.open(io.BytesIO(image))
         return self.__extractFromPillowImage(pillowImage) 
     
     def __extractFromArray(self, image: ndarray) -> ImageProperty:
-        pillowImage = Image.fromarray(ndarray)
+        pillowImage = Image.fromarray(image)
         return self.__extractFromPillowImage(pillowImage)
 
     def __extractFromPillowImage(self, image: Image.Image) -> ImageProperty:
@@ -54,6 +47,6 @@ class ImagePropertyExtractor(object):
         channel = len(image.getbands())
         mode = image.mode
 
-        imagePropety = ImageProperty(width, height, channel, mode)
+        imageProperty = ImageProperty(width, height, channel, mode)
 
-        return imagePropety
+        return imageProperty

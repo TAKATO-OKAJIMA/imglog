@@ -11,17 +11,22 @@ class PillowImageLogger(SurffaceImageLogger):
     def __init__(self, baseImageLogger: BaseImageLogger) -> None:
         SurffaceImageLogger.__init__(baseImageLogger)
 
-    def log(self, level: int, images: Union[Image.Image, List[Image.Image]]) -> None:
-        if isinstance(images, Image.Image):
-            images = [images]
+    def log(self, level: int, image: Union[Image.Image, List[Image.Image]]) -> None:
+        if isinstance(image, Image.Image):
+            image = [image]
 
         bytesImages = list()
         imagesProperty = list()
 
-        for image in images:
-            if self._validator.valid(image):
-                bytesImages.append(image.tobytes())
-                imagesProperty.append(self._extractor.extract(image))
+        for img in image:
+            if self._validator.valid(img):
+                bytesImages.append(img.tobytes())
+                imagesProperty.append(self._extractor.extract(img))
+            else:
+                invalidImage, invalidProperty = self._createInvalidImageObjectAndProperty()
+                bytesImages.append(invalidImage)
+                imagesProperty.append(invalidProperty)
+
 
         self._baseImageLogger.log(level, bytesImages, imagesProperty)
 

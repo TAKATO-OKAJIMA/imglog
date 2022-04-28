@@ -2,7 +2,7 @@ import base64
 import io
 import logging
 from logging import _Level
-from typing import List, Union
+from typing import List, Union, Tuple
 
 from PIL import Image
 
@@ -10,7 +10,7 @@ from .abc import AbstractImageLogger, AbstractImageLoggerFactory
 from .stream import getLogger
 from ..record import ImageLogRecord, ImageProperty
 from ..handler import Handler
-from ..util import _checkLevel, ImagePropertyExtractor, ImageValidator
+from ..util import _checkLevel, ImagePropertyExtractor, ImageValidator, InvalidImageCreator
 
 
 class BaseImageLogger(AbstractImageLogger):
@@ -87,6 +87,7 @@ class SurffaceImageLogger(AbstractImageLogger):
         self._baseImageLogger = baseImageLogger
         self._validator = ImageValidator()
         self._extractor = ImagePropertyExtractor()
+        self._creator = InvalidImageCreator()
 
     def getEffectiveLevel(self) -> int:
         return self._baseImageLogger.getEffectiveLevel()
@@ -100,6 +101,13 @@ class SurffaceImageLogger(AbstractImageLogger):
     def removeHandler(self, handler: Handler) -> None:
         self._baseImageLogger.removeHandler(handler)
 
+    def _createInvalidImageObjectAndProperty(self) -> Tuple[bytes, ImageProperty]:
+        imageObject = self._creator.createFromDefaultParameters()
+        imageProperty = ImageProperty.initializeInvalidProperty()
+
+        return imageObject, imageProperty
+
     def close(self) -> None:
         del self._validator
         del self._extractor
+        del self._creator

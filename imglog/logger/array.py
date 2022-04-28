@@ -24,6 +24,10 @@ class ArrayImageLogger(SurffaceImageLogger):
                 pillowImage = Image.fromarray(img)
                 bytesImages.append(pillowImage.tobytes())
                 imagesProperty.append(self._extractor.extract(pillowImage))
+            else:
+                invalidImage, invalidProperty = self._createInvalidImageObjectAndProperty()
+                bytesImages.append(invalidImage)
+                imagesProperty.append(invalidProperty)
 
         self._baseImageLogger.log(level, bytesImages, imagesProperty)
 

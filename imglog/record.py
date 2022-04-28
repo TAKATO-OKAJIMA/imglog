@@ -3,6 +3,14 @@ import datetime
 import logging
 from typing import List, Union, Optional
 
+INVALID_PROPERTY = (
+    -1,
+    -1,
+    -1,
+    'INVALID_IMAGE'
+)
+
+
 class ImageProperty(object):
 
     def __init__(self, width: int, height: int, channel: int, mode: str) -> None:
@@ -36,6 +44,10 @@ class ImageProperty(object):
         }
 
         return properties
+
+    @staticmethod
+    def initializeInvalidProperty() -> 'ImageProperty':
+        return ImageProperty(*INVALID_PROPERTY)
 
 
 class ImageLogRecord(object):

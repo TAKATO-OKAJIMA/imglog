@@ -13,11 +13,17 @@ class BytesImageLogger(SurffaceImageLogger):
         if isinstance(image, bytes):
             image = [image]
 
+        inputImages = list()
         imagesProperty = list()
 
         for img in image:
             if self._validator.valid(img):
+                inputImages.append(img)
                 imagesProperty.append(self._extractor.extract(img))
+            else:
+                invalidImage, invalidProperty = self._createInvalidImageObjectAndProperty()
+                inputImages.append(invalidImage)
+                imagesProperty.append(invalidProperty)
 
         self._baseImageLogger.log(level, image, imagesProperty)
 
