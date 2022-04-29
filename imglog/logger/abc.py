@@ -1,5 +1,6 @@
-from abc import ABCMeta, abstractmethod
 import logging
+import threading
+from abc import ABCMeta, abstractmethod
 from typing import Any, List, Union
 from logging import _Level
 
@@ -51,11 +52,23 @@ class AbstractImageLogger(metaclass=ABCMeta):
 
 
 class AbstractImageLoggerFactory(metaclass=ABCMeta):
+    __instance = None
+    __lock = threading.Lock()
 
     def __init__(self) -> None:
-        pass
+        self._loggers = dict()
 
     @abstractmethod
     def getLogger(self, name: str) -> AbstractImageLogger:
         pass
+
+    def close(self) -> None:
+        [logger.close() for logger in self._loggers.values()]
+        del self._loggers
     
+    def __new__(cls):
+        with cls.__lock:
+            if cls.__instance is None:
+                cls.__instance = super().__new__(cls)
+
+        return cls.__instance

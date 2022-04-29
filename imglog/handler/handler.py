@@ -7,12 +7,24 @@ from logging import _Level
 from ..record import ImageLogRecord
 from ..util import _checkLevel
 
+handlers = list()
+
+def addHandlers(handler) -> None:
+    if not handler in handlers:
+        handlers.append(handler)
+
+
+def close() -> None:
+    [handler.close() for handler in handlers]
+
 
 class Handler(object):
 
     def __init__(self,
                  level: Union[int, str] = logging.NOTSET) -> None:
         self._level = _checkLevel(level)
+        
+        handlers.append(self)
 
     def emit(self, record: ImageLogRecord) -> None:
         raise NotImplementedError

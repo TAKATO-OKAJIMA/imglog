@@ -1,4 +1,4 @@
-from .handler import FileHandler, Handler
+from .handler import FileHandler, Handler, close
 from .csv import CSVHandler
 from .html import HTMLHandler
 from .json import JSONHandler

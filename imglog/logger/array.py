@@ -37,16 +37,16 @@ class ArrayImageLogger(SurffaceImageLogger):
 
 class ArrayImageLoggerFactory(AbstractImageLoggerFactory):
 
-    __loggers = {}
-
     def __init__(self) -> None:
         self.__baseImageLoggerFactory = BaseImageLoggerFactory()
+        AbstractImageLoggerFactory.__init__(self)
 
     def getLogger(self, name: str) -> ArrayImageLogger:
-        if not name in ArrayImageLoggerFactory.__loggers:
+        if not name in self._loggers:
             logger = ArrayImageLogger(self.__baseImageLoggerFactory.getLogger(name))
-            ArrayImageLoggerFactory.__loggers[name] = logger
+            self._loggers[name] = logger
         else:
-            logger = ArrayImageLoggerFactory.__loggers[name]
+            logger = self._loggers[name]
 
         return logger
+        

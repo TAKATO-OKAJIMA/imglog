@@ -36,16 +36,15 @@ class PillowImageLogger(SurffaceImageLogger):
 
 class PillowImageLoggerFactory(AbstractImageLoggerFactory):
 
-    __loggers = {}
-
     def __init__(self) -> None:
         self.__baseImageLoggerFactory = BaseImageLoggerFactory()
+        AbstractImageLoggerFactory.__init__(self)
 
-    def getLogger(self, name: str) -> AbstractImageLogger:
-        if not name in PillowImageLoggerFactory.__loggers:
+    def getLogger(self, name: str) -> PillowImageLogger:
+        if not name in self._loggers:
             logger = PillowImageLogger(self.__baseImageLoggerFactory.getLogger(name))
-            PillowImageLoggerFactory.__loggers[name] = logger
+            self._loggers[name] = logger
         else:
-            logger = PillowImageLoggerFactory.__loggers[name]
+            logger = self._loggers[name]
         
         return logger

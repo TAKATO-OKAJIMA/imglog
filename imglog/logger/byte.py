@@ -25,7 +25,7 @@ class BytesImageLogger(SurffaceImageLogger):
                 inputImages.append(invalidImage)
                 imagesProperty.append(invalidProperty)
 
-        self._baseImageLogger.log(level, image, imagesProperty)
+        self._baseImageLogger.log(level, inputImages, imagesProperty)
 
     def close(self) -> None:
         SurffaceImageLogger.close(self)
@@ -33,16 +33,15 @@ class BytesImageLogger(SurffaceImageLogger):
 
 class BytesImageLoggerFactory(AbstractImageLoggerFactory):
 
-    __loggers = {}
-
     def __init__(self) -> None:
         self.__baseImageLoggerFactory = BaseImageLoggerFactory()
+        AbstractImageLoggerFactory.__init__(self)
 
-    def getLogger(self, name: str) -> AbstractImageLogger:
-        if not name in BytesImageLoggerFactory.__loggers:
+    def getLogger(self, name: str) -> BytesImageLogger:
+        if not name in self._loggers:
             logger = BytesImageLogger(self.__baseImageLoggerFactory.getLogger(name))
-            BytesImageLoggerFactory.__loggers[name] = logger
+            self._loggers[name] = logger
         else:
-            logger = BytesImageLoggerFactory.__loggers[name]
+            logger = self._loggers[name]
 
         return logger

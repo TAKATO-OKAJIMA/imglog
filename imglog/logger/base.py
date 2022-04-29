@@ -43,10 +43,12 @@ class BaseImageLogger(AbstractImageLogger):
         self.__streamLogger.setLevel(level)
 
     def addHandler(self, handler: Handler) -> None:
-        self.__handlers.append(handler)
+        if not handler in self.__handlers:
+            self.__handlers.append(handler)
 
     def removeHandler(self, handler: Handler) -> None:
-        self.__handlers.remove(handler)
+        if handler in self.__handlers:
+            self.__handlers.remove(handler)
 
     def __imageExchangeBase64(self, image: bytes, format: str = 'PNG') -> str:
         inputStream = io.BytesIO(image)
@@ -66,17 +68,15 @@ class BaseImageLogger(AbstractImageLogger):
 
 class BaseImageLoggerFactory(AbstractImageLoggerFactory):
 
-    __loggers = {}
-
     def __init__(self) -> None:
-        pass
+        AbstractImageLoggerFactory.__init__(self)
 
-    def getLogger(self, name: str) -> AbstractImageLogger:
-        if not name in BaseImageLoggerFactory.__loggers:
+    def getLogger(self, name: str) -> BaseImageLogger:
+        if not name in self._loggers:
             logger = BaseImageLogger(name)
-            BaseImageLoggerFactory.__loggers[name] = logger
+            self._loggers[name] = logger
         else:
-            logger = BaseImageLoggerFactory[name]
+            logger = self._loggers[name]
 
         return logger
 
