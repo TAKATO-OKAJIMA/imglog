@@ -6,28 +6,28 @@ from logging import _Level
 
 from ..handler import Handler
 
-ClassSupportImageObject = Any
+ClassSupportImageType = Any
 
 
 class AbstractImageLogger(metaclass=ABCMeta):
 
     @abstractmethod
-    def log(self, level: int, image: Union[ClassSupportImageObject, List[ClassSupportImageObject]]) -> None:
+    def log(self, level: int, image: Union[ClassSupportImageType, List[ClassSupportImageType]]) -> None:
         pass
 
-    def debug(self, image: Union[ClassSupportImageObject, List[ClassSupportImageObject]]) -> None:
+    def debug(self, image: Union[ClassSupportImageType, List[ClassSupportImageType]]) -> None:
         self.log(logging.DEBUG, image)
 
-    def info(self, image: Union[ClassSupportImageObject, List[ClassSupportImageObject]]) -> None:
+    def info(self, image: Union[ClassSupportImageType, List[ClassSupportImageType]]) -> None:
         self.log(logging.INFO, image)
 
-    def warning(self, image: Union[ClassSupportImageObject, List[ClassSupportImageObject]]) -> None:
+    def warning(self, image: Union[ClassSupportImageType, List[ClassSupportImageType]]) -> None:
         self.log(logging.WARNING, image)
  
-    def error(self, image: Union[ClassSupportImageObject, List[ClassSupportImageObject]]) -> None:
+    def error(self, image: Union[ClassSupportImageType, List[ClassSupportImageType]]) -> None:
         self.log(logging.ERROR, image)
 
-    def critical(self, image: Union[ClassSupportImageObject, List[ClassSupportImageObject]]) -> None:
+    def critical(self, image: Union[ClassSupportImageType, List[ClassSupportImageType]]) -> None:
         self.log(logging.CRITICAL, image)
 
     @abstractmethod

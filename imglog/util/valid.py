@@ -30,12 +30,16 @@ class ImageValidator(object):
         elif isinstance(image, ndarray):
             return self.__validFromArray(image)
         elif isinstance(image, Image.Image):
-            return self.__validFromPillowImage
+            return self.__validFromPillowImage(image)
         else:
             return False
 
     def __validFromBytes(self, image: bytes) -> bool:
-        pillowImage = Image.open(BytesIO(image))
+        try:
+            pillowImage = Image.open(BytesIO(image))
+        except:
+            return False
+
         return self.__validFromPillowImage(pillowImage)
 
     def __validFromArray(self, image: ndarray) -> bool:
@@ -46,7 +50,11 @@ class ImageValidator(object):
             return False
 
     def __validFromPillowImage(self, image: Image.Image) -> bool:
-        width, height = image.size
+        try:
+            width, height = image.size
+        except:
+            return False
+            
         if width > MIN_IMAGE_SIZE and height > MIN_IMAGE_SIZE:
             return True
         else:
