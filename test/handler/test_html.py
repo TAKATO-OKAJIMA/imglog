@@ -1,17 +1,17 @@
 import unittest
 import logging
 
-from imglog.handler import CSVHandler
+from imglog.handler import HTMLHandler
 from imglog.record import ImageLogRecord
 from imglog.util import ImagePropertyExtractor
 
 from .. import setting
 
 
-class TestCSVHandler(unittest.TestCase):
+class TestHTMLHandler(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.handler = CSVHandler(setting.OUTPUT_HTML)
+        self.handler = HTMLHandler(setting.OUTPUT_HTML)
         self.extractor = ImagePropertyExtractor()
 
         self.properties = [self.extractor.extract(image)
@@ -39,5 +39,3 @@ class TestCSVHandler(unittest.TestCase):
 
     def testFilename(self):
         self.assertEqual(self.handler.filename, setting.OUTPUT_HTML)
-
-    
