@@ -3,6 +3,10 @@ from logging import FileHandler, Formatter, StreamHandler, getLogger, Logger
 
 LOGGERS = dict()
 
+__all__ = [
+    'getLogger'
+]
+
 def getLogger(name: str) -> Logger:
     if not name in LOGGERS:
         logger = getLogger(name)

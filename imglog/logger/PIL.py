@@ -40,7 +40,7 @@ class PillowImageLoggerFactory(AbstractImageLoggerFactory):
         self.__baseImageLoggerFactory = BaseImageLoggerFactory()
         AbstractImageLoggerFactory.__init__(self)
 
-    def getLogger(self, name: str) -> PillowImageLogger:
+    def getLogger(self, name: str = 'root') -> PillowImageLogger:
         if not name in self._loggers:
             logger = PillowImageLogger(self.__baseImageLoggerFactory.getLogger(name))
             self._loggers[name] = logger

@@ -37,7 +37,7 @@ class BytesImageLoggerFactory(AbstractImageLoggerFactory):
         self.__baseImageLoggerFactory = BaseImageLoggerFactory()
         AbstractImageLoggerFactory.__init__(self)
 
-    def getLogger(self, name: str) -> BytesImageLogger:
+    def getLogger(self, name: str = 'root') -> BytesImageLogger:
         if not name in self._loggers:
             logger = BytesImageLogger(self.__baseImageLoggerFactory.getLogger(name))
             self._loggers[name] = logger

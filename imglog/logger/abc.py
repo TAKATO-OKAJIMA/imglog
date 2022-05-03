@@ -59,7 +59,7 @@ class AbstractImageLoggerFactory(metaclass=ABCMeta):
         self._loggers = dict()
 
     @abstractmethod
-    def getLogger(self, name: str) -> AbstractImageLogger:
+    def getLogger(self, name: str = 'root') -> AbstractImageLogger:
         pass
 
     def close(self) -> None:

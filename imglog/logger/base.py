@@ -18,7 +18,7 @@ class BaseImageLogger(AbstractImageLogger):
     def __init__(self, name: str) -> None:
         self.__streamLogger = getLogger(name)
         self.__handlers = list()
-        self.__level = logging.WARNING
+        self.__level = logging.NOTSET
 
     def log(self, level: int, image: Union[bytes, List[bytes]], imagesProperty: List[ImageProperty]) -> None:
         if isinstance(image, bytes):
@@ -71,7 +71,7 @@ class BaseImageLoggerFactory(AbstractImageLoggerFactory):
     def __init__(self) -> None:
         AbstractImageLoggerFactory.__init__(self)
 
-    def getLogger(self, name: str) -> BaseImageLogger:
+    def getLogger(self, name: str = 'root') -> BaseImageLogger:
         if not name in self._loggers:
             logger = BaseImageLogger(name)
             self._loggers[name] = logger

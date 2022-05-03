@@ -41,7 +41,7 @@ class ArrayImageLoggerFactory(AbstractImageLoggerFactory):
         self.__baseImageLoggerFactory = BaseImageLoggerFactory()
         AbstractImageLoggerFactory.__init__(self)
 
-    def getLogger(self, name: str) -> ArrayImageLogger:
+    def getLogger(self, name: str = 'root') -> ArrayImageLogger:
         if not name in self._loggers:
             logger = ArrayImageLogger(self.__baseImageLoggerFactory.getLogger(name))
             self._loggers[name] = logger
