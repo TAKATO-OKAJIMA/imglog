@@ -1,21 +1,19 @@
 import logging
 import unittest
 
-import numpy as np
-
-from imglog.logger.array import ArrayImageLogger, ArrayImageLoggerFactory
+from imglog.logger.byte import BytesImageLogger, BytesImageLoggerFactory
 from imglog.logger.base import BaseImageLogger
 
 from .. import setting
 
 
-class TestArrayImageLogger(unittest.TestCase):
+class TestBytesImageLogger(unittest.TestCase):
 
     def setUp(self) -> None:
         self.name = 'test'
-        self.logger = ArrayImageLogger(BaseImageLogger(self.name))
-        self.testImage = np.array(setting.TEST_IMAGE)
-        self.testImages = [self.testImage.copy() for i in range(2)]
+        self.logger = BytesImageLogger(BaseImageLogger(self.name))
+        self.testImage = setting.TEST_IMAGE.tobytes()
+        self.testImages = [self.testImage for i in range(2)]
 
     def testLog(self):
         self.logger.log(logging.INFO, self.testImage)
@@ -49,14 +47,14 @@ class TestArrayImageLogger(unittest.TestCase):
         
 
 
-class TestArrayImageLoggerFactory(unittest.TestCase):
+class TestBytesImageLoggerFactory(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.factory = ArrayImageLoggerFactory()
+        self.factory = BytesImageLoggerFactory()
         self.name = 'test'
 
     def testSingleton(self):
-        self.assertIs(self.factory, ArrayImageLoggerFactory())
+        self.assertIs(self.factory, BytesImageLoggerFactory())
 
     def testGetLogger(self):
         logger = self.factory.getLogger()
