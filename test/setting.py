@@ -4,7 +4,7 @@ import os
 from PIL import Image
 
 
-VALID_IMAGE_PATH = ''
+VALID_IMAGE_PATH = './test/resource/test.png'
 
 OUTPUT_DIR = './output'
 OUTPUT_CREATED_IMAGE = './output/created_image.png'
