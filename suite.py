@@ -1,7 +1,17 @@
 import unittest
+import os, sys
 
-from test.test_record import *
-from test import util, handler, logger
+try:
+    from test_record import *
+except ModuleNotFoundError:
+    from test.test_record import *
+try:
+    from test import util, handler, logger
+except ImportError:
+    import util, handler, logger
+
+path = os.path.join(os.path.dirname(__file__), '../')
+sys.path.append(path)
 
 
 def getSuite() -> unittest.TestSuite:

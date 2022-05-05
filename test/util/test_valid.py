@@ -13,7 +13,7 @@ class TestImageValidator(unittest.TestCase):
         self.validator = ImageValidator()
         self.image = Image.open(setting.VALID_IMAGE_PATH)
         self.arrayImage = np.array(self.image)
-        self.bytesImage = self.image.tobytes()
+        self.bytesImage = setting.TEST_BYTE_IMAGE
 
     def testValidFromBytes(self):
         self.assertTrue(self.validator.valid(self.bytesImage))
@@ -22,7 +22,7 @@ class TestImageValidator(unittest.TestCase):
         self.assertTrue(self.validator.valid(self.arrayImage))
 
     def testValidFromPillow(self):
-        self.assertTrue(self.validator.valid(True))
+        self.assertTrue(self.validator.valid(self.image))
 
     def testInvalidFromArray(self):
         invalidArrayImage = self.arrayImage[-5:3, 0:-1]

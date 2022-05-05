@@ -50,5 +50,6 @@ class LogFileElement(HTMLFileNodeElement):
         self.addElement('navitems', LogItemElement(records))
 
         scirptElement = ScriptFileElement(scriptResource.load('root.js'))
-        scirptElement.setParameter('recorddata', json.dumps([record.toDict() for record in records]))
+        scirptElement.setParameter('recorddata', json.dumps([record.toDict() for record in records],
+                                                            indent=4))
         self.addElement('script', scirptElement)

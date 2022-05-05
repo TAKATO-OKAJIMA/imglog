@@ -10,7 +10,7 @@ class HTMLHandler(FileHandler):
     def __init__(self,
                  filename: Union[str, Path],
                  encoding: str = 'utf-8') -> None:
-        FileHandler.__init__(filename, encoding)
+        FileHandler.__init__(self, filename, encoding)
 
     def flush(self) -> None:
         htmlString = self.htmlString
@@ -26,7 +26,4 @@ class HTMLHandler(FileHandler):
         return LogFileElement(self._records).render()
 
     def close(self) -> None:
-        if not self.isFileFlushed:
-            self.flush()
-
         FileHandler.close(self)

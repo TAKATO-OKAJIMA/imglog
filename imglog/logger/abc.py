@@ -2,7 +2,7 @@ import logging
 import threading
 from abc import ABCMeta, abstractmethod
 from typing import Any, List, Union
-from logging import _Level
+# from logging import _Level, Ll
 
 from ..handler import Handler
 
@@ -35,7 +35,7 @@ class AbstractImageLogger(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def setLevel(self, level: _Level) -> None:
+    def setLevel(self, level: int) -> None:
         pass
 
     @abstractmethod

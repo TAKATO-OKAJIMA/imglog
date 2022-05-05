@@ -1,6 +1,6 @@
 import atexit
 
-import handler
+from . import handler
 from .handler import Handler, CSVHandler, HTMLHandler, XMLHandler, JSONHandler
 from .logger import *
 
@@ -12,10 +12,10 @@ def shutdown() -> None:
     BaseImageLoggerFactory().close()
     handler.close()
 
-    del BytesImageLoggerFactory()
-    del ArrayImageLoggerFactory()
-    del PillowImageLoggerFactory()
-    del BaseImageLoggerFactory()
+    # del BytesImageLoggerFactory()
+    # del ArrayImageLoggerFactory()
+    # del PillowImageLoggerFactory()
+    # del BaseImageLoggerFactory()
 
 
 atexit.register(shutdown)

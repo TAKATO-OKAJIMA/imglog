@@ -1,5 +1,5 @@
 import logging
-from logging import FileHandler, Formatter, StreamHandler, getLogger, Logger
+from logging import FileHandler, Formatter, StreamHandler, Logger
 
 LOGGERS = dict()
 
@@ -9,7 +9,7 @@ __all__ = [
 
 def getLogger(name: str) -> Logger:
     if not name in LOGGERS:
-        logger = getLogger(name)
+        logger = logging.getLogger(name)
         logger.setLevel(logging.WARNING)
         streamHandler = StreamHandler()
         fileHandler = FileHandler('./' + name + '.log')
@@ -17,11 +17,13 @@ def getLogger(name: str) -> Logger:
         formatter = Formatter('[IMGLOG] | %(asctime)s | %(name)s | %(levelname)s | %(message)s ')
         
         streamHandler.setFormatter(formatter)
+        streamHandler.setLevel(logging.DEBUG)
         fileHandler.setFormatter(formatter)
+        fileHandler.setLevel(logging.DEBUG)
 
         logger.addHandler(streamHandler)
         logger.addHandler(fileHandler)
     else:
-        logger = LOGGERS[name]
+        logger = logging.getLogger(name)
 
     return logger

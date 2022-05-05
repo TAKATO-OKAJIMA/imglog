@@ -1,11 +1,13 @@
+import io
 import unittest
 import logging
 
 from imglog.logger.base import BaseImageLogger, BaseImageLoggerFactory
 from imglog.record import ImageProperty
-from imglog.handler import HTMLHandler
+from imglog.handler import HTMLHandler, XMLHandler, CSVHandler, JSONHandler
 
 from .. import setting
+
 
 
 class TestBaseImageLogger(unittest.TestCase):
@@ -13,13 +15,25 @@ class TestBaseImageLogger(unittest.TestCase):
     def setUp(self) -> None:
         self.name = 'test'
         self.logger = BaseImageLogger(self.name)
-        self.testImage = setting.TEST_IMAGE.tobytes()
+        self.testImage = setting.TEST_BYTE_IMAGE
         self.testImages = [self.testImage for i in range(2)]
 
         self.testProperty = ImageProperty(0, 0, 0, 'RGB')
         self.testProperties = [self.testProperty for i in range(2)]
+        self.testProperty = [self.testProperty]
 
-        self.logger.addHandler(HTMLHandler(setting.OUTPUT_HTML))
+        htmlHandler = HTMLHandler(setting.OUTPUT_HTML)
+        jsonHandler = JSONHandler(setting.OUTPUT_JSON)
+        xmlHandler = XMLHandler(setting.OUTPUT_XML)
+        csvHandler = CSVHandler(setting.OUTPUT_CSV)
+
+
+        self.logger.addHandler(htmlHandler)
+        self.logger.addHandler(jsonHandler)
+        self.logger.addHandler(xmlHandler)
+        self.logger.addHandler(csvHandler)
+
+        self.logger.setLevel(logging.DEBUG)
 
     def testLog(self):
         self.logger.log(logging.INFO, self.testImage, self.testProperty)
@@ -46,7 +60,7 @@ class TestBaseImageLogger(unittest.TestCase):
         self.logger.critical(self.testImages, self.testProperties)
 
     def testGetEffectiveLevel(self):
-        self.assertEqual(logging.NOTSET, self.logger.getEffectiveLevel())
+        self.assertEqual(logging.DEBUG, self.logger.getEffectiveLevel())
 
         self.logger.setLevel(logging.INFO)
         self.assertEqual(logging.INFO, self.logger.getEffectiveLevel())

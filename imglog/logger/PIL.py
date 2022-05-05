@@ -1,3 +1,4 @@
+import io
 from typing import List, Union
 
 from PIL import Image
@@ -9,7 +10,7 @@ from .base import BaseImageLogger, BaseImageLoggerFactory, SurffaceImageLogger
 class PillowImageLogger(SurffaceImageLogger):
 
     def __init__(self, baseImageLogger: BaseImageLogger) -> None:
-        SurffaceImageLogger.__init__(baseImageLogger)
+        SurffaceImageLogger.__init__(self, baseImageLogger)
 
     def log(self, level: int, image: Union[Image.Image, List[Image.Image]]) -> None:
         if isinstance(image, Image.Image):
@@ -20,7 +21,9 @@ class PillowImageLogger(SurffaceImageLogger):
 
         for img in image:
             if self._validator.valid(img):
-                bytesImages.append(img.tobytes())
+                inputStream = io.BytesIO()
+                img.save(inputStream, format='PNG')
+                bytesImages.append(inputStream.getvalue())
                 imagesProperty.append(self._extractor.extract(img))
             else:
                 invalidImage, invalidProperty = self._createInvalidImageObjectAndProperty()

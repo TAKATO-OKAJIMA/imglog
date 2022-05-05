@@ -2,7 +2,7 @@ import logging
 import os
 from pathlib import Path
 from typing import Union
-from logging import _Level
+# from logging import _Level
 
 from ..record import ImageLogRecord
 from ..util import _checkLevel
@@ -35,7 +35,7 @@ class Handler(object):
     def close(self) -> None:
         del self._level
 
-    def setLevel(self, level: _Level) -> None:
+    def setLevel(self, level: int) -> None:
         self._level = _checkLevel(level)
 
 
@@ -55,14 +55,14 @@ class FileHandler(Handler):
 
     def emit(self, record: ImageLogRecord) -> None:
         if record.level >= self._level:
-            self.__records.append(record)
+            self._records.append(record)
 
     def flush(self) -> None:
         self._isFileFlushed = True
 
     @property
     def filename(self) -> str:
-        self._filename
+        return self._filename
 
     @filename.setter
     def filename(self, filename: Union[str, Path]) -> None:

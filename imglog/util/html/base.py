@@ -47,7 +47,7 @@ class HTMLFileNodeElement(HTMLNodeElement):
         document = os.fspath(document)
 
         with open(os.path.abspath(document), 'r', encoding='utf-8') as file:
-            HTMLNodeElement.__init__(self, document)
+            HTMLNodeElement.__init__(self, file.read())
 
         
 class ScriptElement(HTMLElement):
@@ -68,7 +68,7 @@ class ScriptElement(HTMLElement):
         return f'''
         <script type="text/javascript">
             {script}
-        <script>
+        </script>
         '''
 
 
@@ -140,8 +140,10 @@ class StyleEditableElement(StyleElement):
             }
             '''.format(selector=selector, style='\n'.join(style)))
 
+        style_string = '\n'.join(styles)
+
         return f'''
         <style>
-            {'\n'.join(styles)}
+            {style_string}
         </style>
         '''

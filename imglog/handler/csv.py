@@ -1,5 +1,6 @@
 import csv
 import io
+import logging
 from pathlib import Path
 from typing import Union
 
@@ -28,11 +29,11 @@ class CSVHandler(FileHandler):
     @property
     def csvString(self) -> str:
         file = io.StringIO()
-        writer = csv.writer(file)
+        writer = csv.writer(file, lineterminator='\n')
 
         writer.writerow(['id', 'time', 'level'])
         for record in self._records:
-            writer.writerow([record.id, record.time, record.level])
+            writer.writerow([record.id, record.time, logging._levelToName[record.level]])
 
         recordCSV = file.getvalue()
         file.close()

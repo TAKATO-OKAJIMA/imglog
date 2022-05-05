@@ -1,3 +1,4 @@
+import io
 from typing import List, Union
 
 from numpy import ndarray
@@ -22,7 +23,11 @@ class ArrayImageLogger(SurffaceImageLogger):
         for img in image:
             if self._validator.valid(img):
                 pillowImage = Image.fromarray(img)
-                bytesImages.append(pillowImage.tobytes())
+
+                inputStream = io.BytesIO()
+                pillowImage.save(inputStream, format='PNG')
+                bytesImages.append(inputStream.getvalue())
+
                 imagesProperty.append(self._extractor.extract(pillowImage))
             else:
                 invalidImage, invalidProperty = self._createInvalidImageObjectAndProperty()

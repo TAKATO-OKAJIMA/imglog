@@ -1,3 +1,4 @@
+import logging
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as md
 from pathlib import Path
@@ -37,7 +38,7 @@ class XMLHandler(FileHandler):
                                        {
                                            'id': record.id,
                                            'time': record.time,
-                                           'level': record.level
+                                           'level': logging.getLevelName(record.level)
                                        })
             
             imagesElement = ET.Element('images')
@@ -48,7 +49,7 @@ class XMLHandler(FileHandler):
 
             imagesPropertyElement = ET.Element('imagesProperty')
             for imageProperty in record.imagesProperty:
-                imagePropertyElement = ET.Element('imageProperty', imageProperty.toDict())
+                imagePropertyElement = ET.Element('imageProperty', imageProperty.toDictStringEscaped())
                 imagesPropertyElement.append(imagePropertyElement)
             
             recordElement.append(imagesElement)
@@ -59,9 +60,8 @@ class XMLHandler(FileHandler):
         etreeString = ET.tostring(root, encoding=self._encoding).decode(self._encoding)
         document = md.parseString(etreeString)
 
-        return document.toprettyxml(indent=self.__indent, encoding=self._encoding)
+        return document.toprettyxml(indent=self.__indent, encoding=self._encoding).decode(self._encoding)
 
     def close(self) -> None:
-        del self.__indent
-
         FileHandler.close(self)
+        del self.__indent

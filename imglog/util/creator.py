@@ -1,3 +1,4 @@
+import io
 from typing import Tuple, overload
 
 from PIL import Image, ImageDraw
@@ -60,8 +61,10 @@ class InvalidImageCreator(object):
             fill=textColor,
             anchor='mm'
             )
-        
-        result = image.tobytes()
+
+        outputStream = io.BytesIO()
+        image.save(outputStream, format='PNG')
+        result = outputStream.getvalue()
 
         return result
         

@@ -44,6 +44,16 @@ class ImageProperty(object):
         }
 
         return properties
+    
+    def toDictStringEscaped(self) -> dict:
+        properties = {
+            'width': str(self.__width),
+            'height': str(self.__height),
+            'channel': str(self.__channel),
+            'mode': self.__mode
+        }
+
+        return properties
 
     @staticmethod
     def initializeInvalidProperty() -> 'ImageProperty':

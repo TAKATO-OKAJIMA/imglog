@@ -6,7 +6,7 @@ const logLevelElement = document.getElementById("loglevel");
 const traceElement = document.getElementById("tracecontent");
 const imageElement = document.getElementById("images");
 const imagesDataElement = document.getElementById("databody");
-const logIdElements = document.getElementsByClassName("logid");
+const logContentElement = document.getElementById("logcontent");
 let preyElement = document.createElement('li');
 
 
@@ -47,12 +47,12 @@ function loadImages(images){
     }
 }
 
-function loadImagesData(imagesdata){
+function loadImagesData(imagesProperty){
     while (imagesDataElement.firstChild){
         imagesDataElement.removeChild(imagesDataElement.firstChild);
     }
 
-    for (let [index, imagedata] of imagesdata.entries()){
+    for (let [index, imageProperty] of imagesProperty.entries()){
         const trElement = document.createElement("tr");
 
         const tableHead = document.createElement("th");
@@ -62,15 +62,18 @@ function loadImagesData(imagesdata){
         trElement.appendChild(tableHead);
 
         const widthElement = document.createElement("td");
-        widthElement.textContent = imagedata.width;
+        widthElement.textContent = imageProperty.width;
 
         const heightElement = document.createElement("td");
-        heightElement.textContent = imagedata.height;
+        heightElement.textContent = imageProperty.height;
 
         const channelElement = document.createElement("td");
-        channelElement.textContent = imagedata.channel;
+        channelElement.textContent = imageProperty.channel;
 
-        const elements = [widthElement, heightElement, channelElement];
+        const modeElement = document.createElement("td")
+        modeElement.textContent = imageProperty.mode
+
+        const elements = [widthElement, heightElement, channelElement, modeElement];
         for (const element of elements) {
             trElement.appendChild(element);
         }
@@ -80,6 +83,7 @@ function loadImagesData(imagesdata){
 }
 
 function loadLog(id, source) {
+    logContentElement.classList.remove('d-none')
     preyElement.classList.remove('shadow');
     source.classList.add('shadow');
     preyElement = source;
@@ -88,18 +92,17 @@ function loadLog(id, source) {
         if(id == record.id) {
             loadTitles(record.time, record.level);
             loadImages(record.images);
-            loadImagesData(record.datas);
-            loadTraceContent(record.stacktrace);
+            loadImagesData(record.imagesProperty);
+            // loadTraceContent(record.stacktrace);
         }
     }
 }
 
 function loadLogInput() {
     const inputId = logIdInputFormElement.value;
+    const searchResult = document.getElementById(inputId)
 
-    for (let element of logIdElements) {
-        if (inputId == element.textContent) {
-            loadLog(inputId, element.parentElement.parentElement);
-        }
+    if (searchResult != null) {
+        loadLog(inputId, searchResult)
     }
 }

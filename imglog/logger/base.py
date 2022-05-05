@@ -1,12 +1,11 @@
 import base64
 import io
 import logging
-from logging import _Level
 from typing import List, Union, Tuple
 
 from PIL import Image
 
-from .abc import AbstractImageLogger, AbstractImageLoggerFactory
+from .abc import AbstractImageLogger, AbstractImageLoggerFactory, ClassSupportImageType
 from .stream import getLogger
 from ..record import ImageLogRecord, ImageProperty
 from ..handler import Handler
@@ -18,7 +17,7 @@ class BaseImageLogger(AbstractImageLogger):
     def __init__(self, name: str) -> None:
         self.__streamLogger = getLogger(name)
         self.__handlers = list()
-        self.__level = logging.NOTSET
+        self.__level = logging.WARNING
 
     def log(self, level: int, image: Union[bytes, List[bytes]], imagesProperty: List[ImageProperty]) -> None:
         if isinstance(image, bytes):
@@ -35,12 +34,37 @@ class BaseImageLogger(AbstractImageLogger):
             for handler in self.__handlers:
                 handler.emit(record)
 
+    def debug(self, 
+              image: Union[ClassSupportImageType, List[ClassSupportImageType]],
+              imagesProperty: List[ImageProperty]) -> None:
+        return self.log(logging.DEBUG, image, imagesProperty)
+
+    def info(self, 
+             image: Union[ClassSupportImageType, List[ClassSupportImageType]],
+             imagesProperty: List[ImageProperty]) -> None:
+        return self.log(logging.INFO, image, imagesProperty)
+
+    def warning(self, 
+                image: Union[ClassSupportImageType, List[ClassSupportImageType]],
+                imagesProperty: List[ImageProperty]) -> None:
+        return self.log(logging.WARNING, image, imagesProperty)
+
+    def error(self, 
+              image: Union[ClassSupportImageType, List[ClassSupportImageType]],
+              imagesProperty: List[ImageProperty]) -> None:
+        return self.log(logging.ERROR, image, imagesProperty)
+
+    def critical(self, 
+                 image: Union[ClassSupportImageType, List[ClassSupportImageType]],
+                 imagesProperty: List[ImageProperty]) -> None:
+        return self.log(logging.CRITICAL, image, imagesProperty)
+
     def getEffectiveLevel(self) -> int:
         return self.__level
     
-    def setLevel(self, level: _Level) -> None:
+    def setLevel(self, level: int) -> None:
         self.__level = _checkLevel(level)
-        self.__streamLogger.setLevel(level)
+        self.__streamLogger.setLevel(self.__level)
 
     def addHandler(self, handler: Handler) -> None:
         if not handler in self.__handlers:
@@ -92,7 +116,7 @@ class SurffaceImageLogger(AbstractImageLogger):
     def getEffectiveLevel(self) -> int:
         return self._baseImageLogger.getEffectiveLevel()
 
-    def setLevel(self, level: _Level) -> None:
+    def setLevel(self, level: int) -> None:
         self._baseImageLogger.setLevel(level)
 
     def addHandler(self, handler: Handler) -> None:

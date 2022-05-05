@@ -1,8 +1,13 @@
 import logging
-from turtle import width
+import os
 import unittest
+import sys
+
+# path = os.path.join(os.path.dirname(__file__), '../')
+# sys.path.append(path)
 
 from imglog.record import ImageProperty, ImageLogRecord, INVALID_PROPERTY
+
 
 TEST_WIDTH = 5
 TEST_HEIGHT = 5

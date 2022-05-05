@@ -36,6 +36,5 @@ class JSONHandler(FileHandler):
         return json.dumps(recordDict, indent=self.__indent)
 
     def close(self) -> None:
-        del self.__indent
-
         FileHandler.close(self)
+        del self.__indent

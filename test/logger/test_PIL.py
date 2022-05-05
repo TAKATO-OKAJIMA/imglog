@@ -40,7 +40,7 @@ class TestPillowImageLogger(unittest.TestCase):
         self.logger.critical(self.testImages)
 
     def testGetEffectiveLevel(self):
-        self.assertEqual(logging.NOTSET, self.logger.getEffectiveLevel())
+        self.assertEqual(logging.WARNING, self.logger.getEffectiveLevel())
 
         self.logger.setLevel(logging.INFO)
         self.assertEqual(logging.INFO, self.logger.getEffectiveLevel())
