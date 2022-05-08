@@ -1,7 +1,7 @@
 import atexit
 
 from . import handler
-from .handler import Handler, CSVHandler, HTMLHandler, XMLHandler, JSONHandler
+from .handler import Handler, CSVHandler, HTMLHandler, XMLHandler, JSONHandler, LogFileHandler, ConsoleHandler
 from .logger import *
 
 

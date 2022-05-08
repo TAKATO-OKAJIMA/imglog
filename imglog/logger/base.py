@@ -15,7 +15,8 @@ from ..util import _checkLevel, ImagePropertyExtractor, ImageValidator, InvalidI
 class BaseImageLogger(AbstractImageLogger):
 
     def __init__(self, name: str) -> None:
-        self.__streamLogger = getLogger(name)
+        self.__name = name
+        # self.__streamLogger = getLogger(name)
         self.__handlers = list()
         self.__level = logging.WARNING
 
@@ -29,7 +30,7 @@ class BaseImageLogger(AbstractImageLogger):
                                     imagesProperty
                                     )
             
-            self.__streamLogger.log(level, record.id)
+            # self.__streamLogger.log(level, record.id)
 
             for handler in self.__handlers:
                 handler.emit(record)
@@ -64,7 +65,7 @@ class BaseImageLogger(AbstractImageLogger):
     
     def setLevel(self, level: int) -> None:
         self.__level = _checkLevel(level)
-        self.__streamLogger.setLevel(self.__level)
+        # self.__streamLogger.setLevel(self.__level)
 
     def addHandler(self, handler: Handler) -> None:
         if not handler in self.__handlers:
@@ -85,7 +86,7 @@ class BaseImageLogger(AbstractImageLogger):
         return imageDecodedString
 
     def close(self) -> None:
-        del self.__streamLogger
+        # del self.__streamLogger
         del self.__handlers
         del self.__level
 

@@ -87,6 +87,10 @@ class ImageLogRecord(object):
         return self.__level
 
     @property
+    def levelName(self) -> str:
+        return logging.getLevelName(self.__level)
+
+    @property
     def images(self) -> List[Union[bytes, str]]:
         return self.__images.copy()
     

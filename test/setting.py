@@ -16,6 +16,7 @@ OUTPUT_CSV = os.path.abspath('./output/handler_test.csv')
 OUTPUT_HTML = os.path.abspath('./output/handler_test.html')
 OUTPUT_XML = os.path.abspath('./output/handler_test.xml')
 OUTPUT_JSON = os.path.abspath('./output/handler_test.json')
+OUTPUT_LOG = os.path.abspath('./output/handler_test.log')
 
 TEST_IMAGE = Image.open(VALID_IMAGE_PATH)
 
