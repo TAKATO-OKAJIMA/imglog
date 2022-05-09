@@ -10,7 +10,7 @@ try:
 except ImportError:
     import util, handler, logger
 
-path = os.path.join(os.path.dirname(__file__), '../')
+path = os.path.join(os.path.dirname(__file__), './')
 sys.path.append(path)
 
 
