@@ -12,7 +12,7 @@ class ConsoleHandler(Handler):
     def __init__(self) -> None:
         Handler.__init__(self)
 
-    def emit(self, record: ImageLogRecord) -> None:
+    def handle(self, record: ImageLogRecord) -> None:
         print(MESSAGE_FORMAT.format(record=record))
 
     def close(self) -> None:

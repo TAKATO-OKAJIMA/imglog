@@ -33,7 +33,7 @@ class BaseImageLogger(AbstractImageLogger):
             # self.__streamLogger.log(level, record.id)
 
             for handler in self.__handlers:
-                handler.emit(record)
+                handler.handle(record)
 
     def debug(self, 
               image: Union[ClassSupportImageType, List[ClassSupportImageType]],

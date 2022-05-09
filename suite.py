@@ -1,6 +1,9 @@
 import unittest
 import os, sys
 
+path = os.path.join(os.path.dirname(__file__), './src')
+sys.path.append(path)
+
 try:
     from test_record import *
 except ModuleNotFoundError:
@@ -9,9 +12,6 @@ try:
     from test import util, handler, logger
 except ImportError:
     import util, handler, logger
-
-path = os.path.join(os.path.dirname(__file__), './')
-sys.path.append(path)
 
 
 def getSuite() -> unittest.TestSuite:
@@ -30,7 +30,7 @@ def getSuite() -> unittest.TestSuite:
 
 
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner()
-    suite = getSuite()
-
-    runner.run(suite)
+    with open('./output/test_result.log', 'w', encoding='utf-8') as file: 
+        runner = unittest.TextTestRunner(verbosity=2)
+        suite = getSuite()
+        runner.run(suite)

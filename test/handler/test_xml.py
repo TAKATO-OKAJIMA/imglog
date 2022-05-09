@@ -25,13 +25,17 @@ class TestXMLHandler(unittest.TestCase):
                                         setting.HANDLER_TEST_BASE64_IMAGE,
                                         self.properties)
 
+    def testHandle(self):
+        self.handler.handle(self.infoRecord)
+        self.assertTrue(True)
+
     def testEmit(self):
         self.handler.emit(self.infoRecord)
         self.assertTrue(True)
 
     def testFlush(self):
-        self.handler.emit(self.infoRecord)
-        self.handler.emit(self.waningRecord)
+        self.handler.handle(self.infoRecord)
+        self.handler.handle(self.waningRecord)
 
         self.handler.flush()
         self.assertTrue(True)

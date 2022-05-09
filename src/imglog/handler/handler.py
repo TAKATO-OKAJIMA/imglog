@@ -26,6 +26,9 @@ class Handler(object):
         
         handlers.append(self)
 
+    def handle(self, record: ImageLogRecord) -> None:
+        raise NotImplementedError
+
     def emit(self, record: ImageLogRecord) -> None:
         raise NotImplementedError
 
@@ -53,9 +56,12 @@ class FileHandler(Handler):
         
         Handler.__init__(self)
 
-    def emit(self, record: ImageLogRecord) -> None:
+    def handle(self, record: ImageLogRecord) -> None:
         if record.level >= self._level:
-            self._records.append(record)
+            self.emit(record)
+
+    def emit(self, record: ImageLogRecord) -> None:
+        self._records.append(record)
 
     def flush(self) -> None:
         self._isFileFlushed = True
