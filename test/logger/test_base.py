@@ -82,4 +82,5 @@ class TestBaseImageLoggerFactory(unittest.TestCase):
         logger = self.factory.getLogger()
 
         self.assertIs(logger, self.factory.getLogger())
+        self.assertIs(logger, self.factory.getLogger(self.name).parent)
         self.assertIsNot(logger, self.factory.getLogger(self.name))

@@ -62,7 +62,7 @@ class ImageProperty(object):
 
 class ImageLogRecord(object):
 
-    def __init__(self, 
+    def __init__(self,
                  level: int,
                  images: List[Union[bytes, str]], 
                  imagesProperty: List[ImageProperty], 

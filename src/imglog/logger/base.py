@@ -1,22 +1,25 @@
 import base64
 import io
 import logging
-from typing import List, Union, Tuple
+from traceback import print_stack
+from typing import List, Optional, Union, Tuple
 
 from PIL import Image
 
 from .abc import AbstractImageLogger, AbstractImageLoggerFactory, ClassSupportImageType
-from .stream import getLogger
 from ..record import ImageLogRecord, ImageProperty
 from ..handler import Handler
-from ..util import _checkLevel, ImagePropertyExtractor, ImageValidator, InvalidImageCreator
+from ..util import _checkLevel, ImagePropertyExtractor, ImageValidator, InvalidImageCreator, LoggerName
 
 
 class BaseImageLogger(AbstractImageLogger):
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, 
+                 name: str,
+                 propagate: bool = True) -> None:
         self.__name = name
-        # self.__streamLogger = getLogger(name)
+        self.__propagate = propagate
+        self.__parent = None
         self.__handlers = list()
         self.__level = logging.WARNING
 
@@ -29,11 +32,8 @@ class BaseImageLogger(AbstractImageLogger):
                                     [self.__imageExchangeBase64(img) for img in image],
                                     imagesProperty
                                     )
-            
-            # self.__streamLogger.log(level, record.id)
 
-            for handler in self.__handlers:
-                handler.handle(record)
+            self.handle(record)
 
     def debug(self, 
               image: Union[ClassSupportImageType, List[ClassSupportImageType]],
@@ -60,12 +60,19 @@ class BaseImageLogger(AbstractImageLogger):
                  imagesProperty: List[ImageProperty]) -> None:
         return self.log(logging.CRITICAL, image, imagesProperty)
 
+    def handle(self, record: ImageLogRecord) -> None:
+        for handler in self.__handlers:
+                handler.handle(record)
+
+        if self.__propagate and not self.__parent is None:
+            self.__parent.handle(record)
+
+
     def getEffectiveLevel(self) -> int:
         return self.__level
     
     def setLevel(self, level: int) -> None:
         self.__level = _checkLevel(level)
-        # self.__streamLogger.setLevel(self.__level)
 
     def addHandler(self, handler: Handler) -> None:
         if not handler in self.__handlers:
@@ -85,8 +92,38 @@ class BaseImageLogger(AbstractImageLogger):
         imageDecodedString = base64.b64encode(outputStream.getvalue()).decode('ascii')
         return imageDecodedString
 
+    @property
+    def name(self) -> str:
+        return self.__name
+
+    @property
+    def propagate(self) -> bool:
+        return self.__propagate
+
+    @propagate.setter
+    def propagate(self, value) -> None:
+        try :
+            self.__propagate = bool(value)
+        except TypeError as e:
+            print(e)
+
+    @property
+    def parent(self) -> Optional['BaseImageLogger']:
+        return self.__parent
+
+    @parent.setter
+    def parent(self, value: 'BaseImageLogger') -> None:
+        if not isinstance(value, BaseImageLogger):
+            raise TypeError
+        if LoggerName(self.__name).parent != LoggerName(value.name):
+            raise ValueError
+
+        self.__parent = value
+
     def close(self) -> None:
-        # del self.__streamLogger
+        del self.__name
+        del self.__propagate
+        del self.__parent
         del self.__handlers
         del self.__level
 
@@ -95,11 +132,17 @@ class BaseImageLoggerFactory(AbstractImageLoggerFactory):
 
     def __init__(self) -> None:
         AbstractImageLoggerFactory.__init__(self)
+        self.getLogger()
 
     def getLogger(self, name: str = 'root') -> BaseImageLogger:
         if not name in self._loggers:
             logger = BaseImageLogger(name)
             self._loggers[name] = logger
+
+            loggerName = LoggerName(logger.name)
+
+            if (not loggerName.isRoot) and logger.parent is None:
+                logger.parent = self.getLogger(str(loggerName.parent))
         else:
             logger = self._loggers[name]
 
@@ -108,10 +151,12 @@ class BaseImageLoggerFactory(AbstractImageLoggerFactory):
 
 class SurffaceImageLogger(AbstractImageLogger):
 
-    def __init__(self, baseImageLogger: BaseImageLogger) -> None:
+    def __init__(self, 
+                 baseImageLogger: BaseImageLogger,
+                 **kwargs) -> None:
         self._baseImageLogger = baseImageLogger
-        self._validator = ImageValidator()
-        self._extractor = ImagePropertyExtractor()
+        self._validator = kwargs.get('validator', ImageValidator())
+        self._extractor = kwargs.get('extractor', ImagePropertyExtractor())
         self._creator = InvalidImageCreator()
 
     def getEffectiveLevel(self) -> int:
