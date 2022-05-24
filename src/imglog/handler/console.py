@@ -4,7 +4,7 @@ from typing import Union
 from .handler import Handler, FileHandler
 from ..record import ImageLogRecord
 
-MESSAGE_FORMAT = '[IMGLOG] | {record.time} | {record.levelName} | {record.id}'
+MESSAGE_FORMAT = '[IMGLOG] | {record.name} | {record.time} | {record.levelName} | {record.id}'
 
 
 class ConsoleHandler(Handler):

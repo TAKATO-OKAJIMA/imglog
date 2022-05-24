@@ -63,11 +63,13 @@ class ImageProperty(object):
 class ImageLogRecord(object):
 
     def __init__(self,
+                 name: str,
                  level: int,
                  images: List[Union[bytes, str]], 
                  imagesProperty: List[ImageProperty], 
                  msg: Optional[str] = None) -> None:
         self.__id = uuid.uuid4().hex
+        self.__name = name
         self.__time = str(datetime.datetime.now())
         self.__level = level
         self.__images = images
@@ -81,6 +83,10 @@ class ImageLogRecord(object):
     @property
     def time(self) -> str:
         return self.__time
+
+    @property
+    def name(self) -> str:
+        return self.__name
 
     @property
     def level(self) -> int:
@@ -105,6 +111,7 @@ class ImageLogRecord(object):
     def toDict(self) -> dict:
         properties = {
             'id': self.__id,
+            'name': self.__name,
             'time': self.__time,
             'level': logging.getLevelName(self.__level),
             'images': self.__images,

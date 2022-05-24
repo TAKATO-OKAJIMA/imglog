@@ -28,7 +28,9 @@ class BaseImageLogger(AbstractImageLogger):
             image = [image]
 
         if level >= self.__level:
-            record = ImageLogRecord(level,
+            record = ImageLogRecord(
+                                    self.__name,
+                                    level,
                                     [self.__imageExchangeBase64(img) for img in image],
                                     imagesProperty
                                     )

@@ -37,6 +37,7 @@ class XMLHandler(FileHandler):
             recordElement = ET.Element('record',
                                        {
                                            'id': record.id,
+                                           'name': record.name,
                                            'time': record.time,
                                            'level': logging.getLevelName(record.level)
                                        })

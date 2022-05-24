@@ -64,13 +64,17 @@ class TestImageProperty(unittest.TestCase):
 class TestImageLogRecord(unittest.TestCase):
 
     def setUp(self) -> None:
+        self.name = 'test'
         self.image = ['aaa', 'bbb']
         self.property = [ImageProperty(TEST_WIDTH, TEST_HEIGHT, TEST_CHANNEL, TEST_MODE)]
 
-        self.record = ImageLogRecord(logging.INFO, self.image, self.property)
+        self.record = ImageLogRecord(self.name, logging.INFO, self.image, self.property)
 
     def testId(self):
         self.assertIsInstance(self.record.id, str)
+
+    def testName(self):
+        self.assertEqual(self.record.name, self.name)
 
     def testTime(self):
         self.assertIsInstance(self.record.time, str)

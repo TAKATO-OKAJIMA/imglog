@@ -31,7 +31,8 @@ class LogItemElement(HTMLElement):
                     <div class="col-md-4 text-end">
                         <h6 class="me-2"><span class="badge {logging.getLevelName(record.level)}">{logging.getLevelName(record.level)}</span></h6>
                     </div>
-                    <h6 class="ms-2 logid">{record.id}</h6>
+                    <h6 class="ms-2 mb-0">{record.id}</h6>
+                    <h6 class="ms-2">{record.name}</h6>
                     <div class="col-md-12"></div>
                 </div>
             </li>

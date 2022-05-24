@@ -31,9 +31,9 @@ class CSVHandler(FileHandler):
         file = io.StringIO()
         writer = csv.writer(file, lineterminator='\n')
 
-        writer.writerow(['id', 'time', 'level'])
+        writer.writerow(['id', 'name', 'time', 'level'])
         for record in self._records:
-            writer.writerow([record.id, record.time, logging._levelToName[record.level]])
+            writer.writerow([record.id, record.name, record.time, logging._levelToName[record.level]])
 
         recordCSV = file.getvalue()
         file.close()

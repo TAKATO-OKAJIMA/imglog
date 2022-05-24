@@ -17,13 +17,17 @@ class TestConsoleHandler(unittest.TestCase):
         self.properties = [self.extractor.extract(image)
                            for image in setting.HANDLER_TEST_IMAGE]
 
-        self.infoRecord = ImageLogRecord(logging.INFO,
+        self.infoRecord = ImageLogRecord(
+                                        setting.NAME,
+                                        logging.INFO,
                                         setting.HANDLER_TEST_BASE64_IMAGE,
                                         self.properties)
 
-        self.waningRecord = ImageLogRecord(logging.WARNING,
-                                        setting.HANDLER_TEST_BASE64_IMAGE,
-                                        self.properties)
+        self.waningRecord = ImageLogRecord(
+                                           setting.NAME,
+                                           logging.WARNING,
+                                           setting.HANDLER_TEST_BASE64_IMAGE,
+                                           self.properties)
 
     def testHandle(self):
         self.handler.handle(self.infoRecord)
@@ -40,13 +44,17 @@ class TestLogFileHandler(unittest.TestCase):
         self.properties = [self.extractor.extract(image)
                            for image in setting.HANDLER_TEST_IMAGE]
 
-        self.infoRecord = ImageLogRecord(logging.INFO,
+        self.infoRecord = ImageLogRecord(
+                                        setting.NAME,
+                                        logging.INFO,
                                         setting.HANDLER_TEST_BASE64_IMAGE,
                                         self.properties)
 
-        self.waningRecord = ImageLogRecord(logging.WARNING,
-                                        setting.HANDLER_TEST_BASE64_IMAGE,
-                                        self.properties)
+        self.waningRecord = ImageLogRecord(
+                                           setting.NAME,
+                                           logging.WARNING,
+                                           setting.HANDLER_TEST_BASE64_IMAGE,
+                                           self.properties)
 
     def testHandle(self):
         self.handler.handle(self.infoRecord)
